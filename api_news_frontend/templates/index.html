@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tailored Insights</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Tailored Insights</h1>
+        <button class="menu-btn" onclick="toggleMenu()">☰ Menu</button>
+    </header>
+
+    <!-- Sliding Menu Panel -->
+    <nav class="side-menu" id="sideMenu">
+        <button class="close-btn" onclick="toggleMenu()">×</button>
+        <ul>
+            <li><a href="/chat-room">Open Chat Room</a></li>
+            <li><a href="/quiz">Take Quiz</a></li>
+            <li><a href="/scan-articles">Scan Articles</a></li>
+            <li><a href="/personalized-recommendations">Personalized-recommendations</a></li>
+            <li><a href="/languages">Languages</a></li>
+        </ul>
+    </nav>
+
+    <!-- Horizontal News Categories -->
+    <nav class="horizontal-nav">
+        <ul>
+            <li><a href="/?category=general">General</a></li>
+            <li><a href="/?category=business">Business</a></li>
+            <li><a href="/?category=technology">Technology</a></li>
+            <li><a href="/?category=sports">Sports</a></li>
+            <li><a href="/?category=entertainment">Entertainment</a></li>
+            <li><a href="/?category=science">Science</a></li>
+            <li><a href="/?category=health">Health</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="content">
+            {% if articles %}
+                <div class="top-article">
+                    <section class="news-section small-article">
+                        <div class="article-box">
+                            <a href="{{ articles[0].url }}" target="_blank">
+                                <img src="{{ articles[0].urlToImage }}" alt="Top Article Image">
+                            </a>
+                            <div class="article-content">
+                                <h2>{{ articles[0].title }}</h2>
+                                <p class="article-description">this is supposed to be top article ,,</p>
+                                <a href="{{ articles[0].url }}" target="_blank" class="read-more">Read more</a>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="articles-container">
+                    {% for article in articles[1:] %}
+                    <section class="news-section small-article">
+                        <div class="article-box">
+                            <a href="{{ article.url }}" target="_blank">
+                                <img src="{{ article.urlToImage }}" alt="Article Image">
+                            </a>
+                            <div class="article-content">
+                                <h3>{{ article.title }}</h3>
+                                <p class="article-description">{{ article.description }}</p>
+                                <a href="{{ article.url }}" target="_blank" class="read-more">Read more</a>
+                            </div>
+                        </div>
+                    </section>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No articles available in this category.</p>
+            {% endif %}
+        </div>
+    </main>
+
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById('sideMenu');
+            var isOpen = menu.style.width === '250px';
+            menu.style.width = isOpen ? '0' : '250px';
+        }
+    </script>
+</body>
+</html>

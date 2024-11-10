@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .question p {
+            font-weight: bold;
+        }
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .result {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Quiz</h1>
+    <form id="quizForm">
+        <!-- Questions will be rendered here -->
+    </form>
+    <button class="submit-btn" onclick="submitQuiz()">Submit Quiz</button>
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+    const questions = [];
+
+    // Fetch questions from text file
+    fetch('/static/questions.txt')
+        .then(response => response.text())
+        .then(data => {
+            const lines = data.split('\n');
+            let question = { text: '', options: [], answer: '' };
+            lines.forEach(line => {
+                if (line.startsWith('Q:')) {
+                    if (question.text) {
+                        questions.push(question);
+                    }
+                    question = { text: line.slice(2).trim(), options: [], answer: '' };
+                } else if (line.startsWith('A:')) {
+                    question.answer = line.slice(2).trim();
+                } else if (line.startsWith('-')) {
+                    question.options.push(line.slice(1).trim());
+                }
+            });
+            questions.push(question);
+            renderQuestions();
+        });
+
+    function renderQuestions() {
+        const quizForm = document.getElementById('quizForm');
+        questions.forEach((q, index) => {
+            const div = document.createElement('div');
+            div.classList.add('question');
+            div.innerHTML = `
+                <p>${index + 1}. ${q.text}</p>
+                ${q.options.map((option, i) => `
+                    <label>
+                        <input type="radio" name="q${index}" value="${option}">
+                        ${option}
+                    </label><br>`).join('')}
+            `;
+            quizForm.appendChild(div);
+        });
+    }
+
+    function submitQuiz() {
+        let score = 0;
+        questions.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            if (selected && selected.value === q.answer) {
+                score++;
+            }
+        });
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `You scored ${score} out of ${questions.length}.<br> ${getRemarks(score)}`;
+    }
+
+    function getRemarks(score) {
+        if (score === questions.length) {
+            return 'Excellent!';
+        } else if (score >= Math.ceil(questions.length * 0.7)) {
+            return 'Great job!';
+        } else if (score >= Math.ceil(questions.length * 0.4)) {
+            return 'Not bad!';
+        } else {
+            return 'Needs improvement.';
+        }
+    }
+</script>
+
+</body>
+</html>

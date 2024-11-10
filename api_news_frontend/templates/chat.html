@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Chat Room</title>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='chat_styles.css') }}">
+    <img src="{{ url_for('static', filename='breaking_news_chat.jpg') }}" alt="News Chat Image">
+
+
+</head>
+<body>
+    <header class="header">
+        <h1>NEWS CHAT ROOM</h1>
+        <h2>Welcome! Get chatting about the latest news articles!</h2>
+    </header>
+
+    <div class="container">
+        <!-- Chat messages will be appended here -->
+    </div>
+
+    <div class="send" id="send-container">
+        <form action="#">
+            <input type="text" name="messageInp" id="messageInp" placeholder="Type a message...">
+            <button class="btn" type="submit">Send</button>
+        </form>
+    </div>
+
+    <div class="leave-chat">
+        <button class="btn leave-btn" id="leaveBtn">Leave Chat Room</button>
+    </div>
+    
+    
+
+    <script defer src="http://localhost:8000/socket.io/socket.io.js"></script>
+    
+    <script src="{{ url_for('static', filename='client.js') }}"></script>
+</body>
+</html>
